@@ -1,10 +1,22 @@
 import React from 'react';
+import Table from './Table.jsx';
 
-const RepoList = (props) => (
-  <div>
-    <h4> Repo List Component </h4>
-    There are {props.repos.length} repos.
-  </div>
-)
+class RepoList extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <div>
+        <h4> Repo List Component </h4>
+        There are {this.props.repos.length} repos.
+
+        <Table repos = {this.props.repos} />
+      </div>
+    )
+  }
+}
+
 
 export default RepoList;
