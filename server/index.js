@@ -24,6 +24,13 @@ app.post('/repos', function (req, res) {
 
 app.get('/repos', function (req, res) {
   // This route should send back the top 25 repos
+  console.log('in get')
+  database.retrieve(function(err, data) {
+    if (data) {
+      res.send(data);
+      console.log('data received in server ', data);
+    }
+  });
 });
 
 let port = 1128;
