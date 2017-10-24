@@ -8,30 +8,55 @@ mongoose.connect('mongodb://localhost/githubfetcher', function(err) {
   }
 });
 
-
-var githubSchema = mongoose.Schema ({
+var repositorySchema = mongoose.Schema ({
   username: String,
   avatar: String,
-  repositoryName: String,
-  repositoryURL: String,
-  repositoryDescription: String,
-  numberForks: Number,
-  dateCreated: Date
+  repository: {
+    id: Number,
+    name: String,
+    url: String,
+    description: String,
+    numberForks: Number,
+    dateCreated: Date
+  }
 })
 
-var githubModel = mongoose.model('githubModel', githubSchema);
+var Repository = mongoose.model('Repository', repositorySchema);
+
+var save = function(arrData) {
+  arrData.forEach(function(item, index) {
+    Repository.findOne({
+      'repository.id': item.id
+    }, function(err, data) {
+      if (err) {
+        console.log('err retrieving from the db ', err);
+      } else {
+        if (data === null) {
+          //does not exist in db yet
+          var repositoryData = new Repository({
+            username: item.owner.login,
+            avatar: item.owner.avatar_url,
+            repository: {
+              id: item.id,
+              name: item.name,
+              url: item.html_url,
+              description: item.description,
+              numberForks: item.forks_count,
+              dateCreated: item.created_at
+            }
+          });
+          repositoryData.save(function(err) {
+            if(err) {
+              console.log('error saving to the database ', err);
+            } else {
+              console.log('successfully saved to the database');
+            }
+          });
+        }
+      }
+    })
+  })
+}
 
 
-// let repoSchema = mongoose.Schema({
-//   // TODO: your schema here!
-// });
-//
-// let Repo = mongoose.model('Repo', repoSchema);
-//
-// let save = (/* TODO */) => {
-//   // TODO: Your code here
-//   // This function should save a repo or repos to
-//   // the MongoDB
-// }
-
-// module.exports.save = save;
+module.exports.save = save;
