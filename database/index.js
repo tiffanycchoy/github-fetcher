@@ -58,5 +58,18 @@ var save = function(arrData) {
   })
 }
 
+var retrieve = function(callback) {
+  Repository.find({}, function(err, data) {
+    if (err) {
+      console.log('error retrieving from the database');
+      callback(err, null);
+    } else {
+      console.log('successfully retrieved from the database ');
+      callback(null, data);
+    }
+  })
+}
+
 
 module.exports.save = save;
+module.exports.retrieve = retrieve;
